@@ -1,0 +1,23 @@
+module(name = "repro")
+
+bazel_dep(name = "rules_oci", version = "2.0.0-alpha2")
+bazel_dep(name = "aspect_bazel_lib", version = "2.7.7")
+
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+
+# Declare external images you need to pull, for example:
+oci.pull(
+    name = "alpine",
+    digest = "sha256:c5b1261d6d3e43071626931fc004f70149baeba2c8ec672bd4f27761f8e1ad6b",
+    image = "alpine",
+    platforms = [
+        "linux/386",
+        "linux/amd64",
+        "linux/arm/v6",
+        "linux/arm/v7",
+        "linux/arm64/v8",
+        "linux/ppc64le",
+        "linux/s390x",
+    ],
+)
+use_repo(oci, "alpine")

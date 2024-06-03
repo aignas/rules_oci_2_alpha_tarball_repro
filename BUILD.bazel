@@ -1,0 +1,28 @@
+load("@aspect_bazel_lib//lib:transitions.bzl", "platform_transition_filegroup")
+load("@rules_oci//oci:defs.bzl", "oci_tarball")
+
+platform(
+    name = "linux_x86_64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+platform_transition_filegroup(
+    name = "transitioned",
+    srcs = ["@alpine"],
+    target_platform = "//:linux_x86_64",
+)
+
+oci_tarball(
+    name = "tarball",
+    image = "transitioned",
+    repo_tags = ["rules_oci_repro_alpine"],
+)
+
+filegroup(
+    name = "tarball_filegroup",
+    srcs = [":tarball"],
+    output_group = "tarball",
+)
